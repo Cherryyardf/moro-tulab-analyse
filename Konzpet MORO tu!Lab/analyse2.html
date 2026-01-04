@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vergleich der Planungsverfahren: Wohnbau in Raeren & Simmerath</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Font Awesome (for icons, using standard web fonts, NO SVG injection) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Embedded CSS for specific chart container constraints and styling -->
+    <style>
+        /* Palette: Dynamic Teal & Orange 
+           Primary: #0F766E (Teal 700)
+           Accent: #F97316 (Orange 500)
+           Bg: #F0FDFA (Teal 50)
+        */
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #F0FDFA; /* Teal 50 */
+            color: #111827;
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+
+        /* HTML-based Pyramid/Diagram Styling */
+        .pyramid-level {
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 4px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .pyramid-level:hover {
+            transform: scale(1.02);
+        }
+
+        .gradient-de {
+            background: linear-gradient(90deg, #0F766E 0%, #115E59 100%);
+        }
+
+        .gradient-be {
+            background: linear-gradient(90deg, #EA580C 0%, #C2410C 100%);
+        }
+        
+        .card-hover:hover {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+    </style>
+    <!-- 
+        NARRATIVE PLAN:
+        1. Intro: Define the complexity of cross-border planning (Raeren vs Simmerath).
+        2. The Pyramids: Visual HTML comparison.
+           a. Hierarchy (Legal)
+           b. Actors (Stakeholders) - NEW
+           c. Timeframes (Process Steps) - NEW
+        3. Timeline: Floating Bar Chart comparing duration of B-Plan vs Permis d'Urbanisme.
+        4. Key Metrics: Radar Chart comparing flexibility, cost, transparency.
+        5. Land Use: Doughnut charts showing distribution of space.
+        6. Conclusion: Summary of the "border effect".
+    -->
+    <!-- CONFIRMATION: NO SVG USED. NO MERMAID JS USED. -->
+</head>
+<body class="antialiased">
+
+    <!-- Header / Hero Section -->
+    <header class="bg-teal-800 text-white p-8 shadow-lg mb-8">
+        <div class="container mx-auto max-w-6xl">
+            <h1 class="text-3xl md:text-5xl font-bold mb-4">Wohnbau & Planungsrecht</h1>
+            <h2 class="text-xl md:text-2xl text-orange-300 font-light">Ein Vergleich der Pyramidenmodelle: Simmerath (DE) & Raeren (BE)</h2>
+            <p class="mt-4 max-w-2xl text-teal-100">
+                Eine visuelle Analyse der hierarchischen Planungsstrukturen in der Grenzregion Eifel. 
+                Wie unterscheiden sich die Wege zum Baurecht in der Deutschsprachigen Gemeinschaft Belgiens und Nordrhein-Westfalen?
+            </p>
+        </div>
+    </header>
+
+    <main class="container mx-auto max-w-6xl px-4 pb-12">
+
+        <!-- SECTION 1: DAS PYRAMIDENMODELL (HTML Structure) -->
+        <section class="mb-16">
+            <div class="mb-6 border-l-4 border-orange-500 pl-4">
+                <h3 class="text-2xl font-bold text-teal-900">1. Die Struktur der Planung</h3>
+                <p class="text-gray-700 mt-2">
+                    Das Gegenstromprinzip visualisiert als Pyramiden. Wir betrachten drei Dimensionen: 
+                    Die rechtliche <strong>Hierarchie</strong>, die beteiligten <strong>Akteure</strong> und den zeitlichen <strong>Ablauf</strong>.
+                </p>
+            </div>
+
+            <!-- SUB-SECTION 1.1: RECHTSHIERARCHIE -->
+            <h4 class="text-xl font-bold text-gray-800 mb-4 pl-2 border-b-2 border-gray-200">A. Die Rechtliche Hierarchie</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+                
+                <!-- DE Pyramid Hierarchy -->
+                <div class="bg-white rounded-xl shadow-md p-6 card-hover">
+                    <h5 class="text-lg font-bold text-teal-800 mb-4 text-center">Simmerath: Normenhierarchie</h5>
+                    <div class="flex flex-col items-center w-full">
+                        <div class="pyramid-level gradient-de w-1/4 h-10 rounded-t-lg text-xs">BUND (ROG)</div>
+                        <div class="pyramid-level gradient-de w-2/5 h-10 text-xs">LEP NRW / Reg.-Plan</div>
+                        <div class="pyramid-level gradient-de w-3/5 h-10 text-xs">FNP (Flächennutzung)</div>
+                        <div class="pyramid-level gradient-de w-4/5 h-12 text-sm">B-Plan / §34 BauGB</div>
+                        <div class="pyramid-level bg-teal-100 text-teal-900 w-full h-14 rounded-b-lg border-2 border-teal-700 text-base font-bold">Baugenehmigung</div>
+                    </div>
+                </div>
+
+                <!-- BE Pyramid Hierarchy -->
+                <div class="bg-white rounded-xl shadow-md p-6 card-hover">
+                    <h5 class="text-lg font-bold text-orange-800 mb-4 text-center">Raeren: Planungsrecht</h5>
+                    <div class="flex flex-col items-center w-full">
+                        <div class="pyramid-level gradient-be w-1/4 h-10 rounded-t-lg text-xs">Region Wallonie (CoDT)</div>
+                        <div class="pyramid-level gradient-be w-2/5 h-10 text-xs">Sektorplan</div>
+                        <div class="pyramid-level gradient-be w-3/5 h-10 text-xs">Strukturschema (SSC)</div>
+                        <div class="pyramid-level gradient-be w-4/5 h-12 text-sm">Parzellierung</div>
+                        <div class="pyramid-level bg-orange-100 text-orange-900 w-full h-14 rounded-b-lg border-2 border-orange-700 text-base font-bold">Permis d'Urbanisme</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SUB-SECTION 1.2: AKTEURE -->
+            <h4 class="text-xl font-bold text-gray-800 mb-4 pl-2 border-b-2 border-gray-200">B. Die Akteure (Instanzenzug)</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+                
+                <!-- DE Pyramid Actors -->
+                <div class="bg-white rounded-xl shadow-md p-6 card-hover">
+                    <h5 class="text-lg font-bold text-teal-800 mb-4 text-center">Simmerath: Zuständigkeiten</h5>
+                    <p class="text-xs text-center text-gray-500 mb-2">Entscheidungshoheit vs. Planungshoheit</p>
+                    <div class="flex flex-col items-center w-full">
+                        <!-- Top: Supervision -->
+                        <div class="pyramid-level gradient-de w-1/3 h-12 rounded-t-lg text-xs">
+                            Bezirksreg. Köln<br>(Obere Bauaufsicht)
+                        </div>
+                        <!-- Middle: Approval Authority -->
+                        <div class="pyramid-level gradient-de w-2/3 h-12 text-xs md:text-sm">
+                            Städteregion Aachen<br>(Untere Bauaufsicht - Genehmigung)
+                        </div>
+                        <!-- Middle: Planning Authority -->
+                        <div class="pyramid-level gradient-de w-5/6 h-12 text-xs md:text-sm">
+                            Gem. Simmerath<br>(Planungsamt - Einvernehmen)
+                        </div>
+                        <!-- Base: Initiator -->
+                        <div class="pyramid-level bg-teal-100 text-teal-900 w-full h-14 rounded-b-lg border-2 border-teal-700 text-sm font-bold">
+                            Bauherr & Entwurfsverfasser<br>(Antragsteller)
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BE Pyramid Actors -->
+                <div class="bg-white rounded-xl shadow-md p-6 card-hover">
+                    <h5 class="text-lg font-bold text-orange-800 mb-4 text-center">Raeren: Zuständigkeiten</h5>
+                    <p class="text-xs text-center text-gray-500 mb-2">Tutelle & Kommunale Autonomie</p>
+                    <div class="flex flex-col items-center w-full">
+                        <!-- Top: Region -->
+                        <div class="pyramid-level gradient-be w-1/3 h-12 rounded-t-lg text-xs">
+                            Region Wallonie<br>(Fonctionnaire Délégué)
+                        </div>
+                        <!-- Middle: Consultation -->
+                        <div class="pyramid-level gradient-be w-2/3 h-12 text-xs md:text-sm">
+                            Gutachterausschüsse<br>(CCATM / DGO4)
+                        </div>
+                        <!-- Middle: Decision Maker -->
+                        <div class="pyramid-level gradient-be w-5/6 h-12 text-xs md:text-sm">
+                            Gem. Raeren<br>(Bürgermeister & Schöffen)
+                        </div>
+                        <!-- Base: Initiator -->
+                        <div class="pyramid-level bg-orange-100 text-orange-900 w-full h-14 rounded-b-lg border-2 border-orange-700 text-sm font-bold">
+                            Bauherr & Architekt<br>(Demandeur)
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SUB-SECTION 1.3: ZEITLICHE STUFEN -->
+            <h4 class="text-xl font-bold text-gray-800 mb-4 pl-2 border-b-2 border-gray-200">C. Verfahrensstufen (Zeitlicher Aufbau)</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                
+                <!-- DE Pyramid Time -->
+                <div class="bg-white rounded-xl shadow-md p-6 card-hover">
+                    <h5 class="text-lg font-bold text-teal-800 mb-4 text-center">Simmerath: Ablauf (§34/B-Plan)</h5>
+                    <div class="flex flex-col items-center w-full">
+                        <!-- Peak: Goal -->
+                        <div class="pyramid-level gradient-de w-1/4 h-10 rounded-t-lg text-xs font-bold">
+                            Baugenehmigung
+                        </div>
+                        <!-- Step 3 -->
+                        <div class="pyramid-level gradient-de w-1/2 h-10 text-xs">
+                            Technische Prüfung & Bescheid
+                        </div>
+                        <!-- Step 2 -->
+                        <div class="pyramid-level gradient-de w-3/4 h-12 text-xs">
+                            Behörden- & Nachbarbeteiligung<br>(Stellungnahmen)
+                        </div>
+                        <!-- Base: Start -->
+                        <div class="pyramid-level bg-teal-100 text-teal-900 w-full h-14 rounded-b-lg border-2 border-teal-700 text-sm font-bold">
+                            Antragseinreichung<br>& Vollständigkeitsprüfung
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BE Pyramid Time -->
+                <div class="bg-white rounded-xl shadow-md p-6 card-hover">
+                    <h5 class="text-lg font-bold text-orange-800 mb-4 text-center">Raeren: Ablauf (Permis)</h5>
+                    <div class="flex flex-col items-center w-full">
+                        <!-- Peak: Goal -->
+                        <div class="pyramid-level gradient-be w-1/4 h-10 rounded-t-lg text-xs font-bold">
+                            Octroi (Erteilung)
+                        </div>
+                        <!-- Step 3 -->
+                        <div class="pyramid-level gradient-be w-1/2 h-10 text-xs">
+                            Entscheidung (Collège/FD)
+                        </div>
+                        <!-- Step 2 -->
+                        <div class="pyramid-level gradient-be w-3/4 h-12 text-xs">
+                            Enquête Publique & Avis<br>(Öffentliche Untersuchung)
+                        </div>
+                        <!-- Base: Start -->
+                        <div class="pyramid-level bg-orange-100 text-orange-900 w-full h-14 rounded-b-lg border-2 border-orange-700 text-sm font-bold">
+                            Dépôt & Accusé de réception<br>(Eingangsbestätigung)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: TIMELINE CHART -->
+        <section class="mb-16">
+            <div class="mb-6 border-l-4 border-teal-500 pl-4">
+                <h3 class="text-2xl font-bold text-teal-900">2. Zeitdauer der Verfahren</h3>
+                <p class="text-gray-700 mt-2">
+                    Wie lange dauert es, neues Baurecht zu schaffen? 
+                    In Deutschland (B-Plan Verfahren) ist der Prozess oft langwieriger durch komplexe Abwägungen. 
+                    In Belgien hängen die Fristen stark vom Vorhandensein eines Sektorplans ab (Rigorose Fristen im CoDT).
+                </p>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-md p-6">
+                <div class="chart-container">
+                    <canvas id="timelineChart"></canvas>
+                </div>
+                <p class="text-xs text-center text-gray-400 mt-2">Schätzung basierend auf Durchschnittswerten für Standardverfahren.</p>
+            </div>
+        </section>
+
+        <!-- SECTION 3: METRICS RADAR -->
+        <section class="mb-16">
+            <div class="mb-6 border-l-4 border-orange-500 pl-4">
+                <h3 class="text-2xl font-bold text-teal-900">3. System-Metriken im Vergleich</h3>
+                <p class="text-gray-700 mt-2">
+                    Eine qualitative Bewertung: Das deutsche System bietet hohe Rechtssicherheit durch Paragraphen, 
+                    während das belgische System in Raeren oft pragmatische Lösungen über das Bürgermeisteramt ermöglicht (Ermessensspielraum).
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <div class="bg-white rounded-xl shadow-md p-6">
+                    <div class="chart-container">
+                        <canvas id="radarChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="space-y-4">
+                    <div class="bg-teal-50 p-4 rounded-lg border-l-4 border-teal-600">
+                        <h5 class="font-bold text-teal-900">Rechtssicherheit (DE)</h5>
+                        <p class="text-sm text-gray-700">Hoch. Ein einmal erlassener B-Plan gibt Bauherren und Nachbarn klare Rechte. Klagen sind jedoch häufiger.</p>
+                    </div>
+                    <div class="bg-orange-50 p-4 rounded-lg border-l-4 border-orange-600">
+                        <h5 class="font-bold text-orange-900">Flexibilität (BE)</h5>
+                        <p class="text-sm text-gray-700">Mittel bis Hoch. Abweichungen (Dérogations) sind möglich, wenn sie das "gute Funktionieren der Orte" nicht stören. Dies schafft Chancen, aber auch Unsicherheit.</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+                        <h5 class="font-bold text-gray-800">Transparenz</h5>
+                        <p class="text-sm text-gray-700">In Simmerath sind Sitzungen und Pläne meist digital gut einsehbar. In Raeren sind die "Avis" (Gutachten) oft entscheidend, aber für den Laien schwerer vorhersehbar.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: LAND USE DISTRIBUTION -->
+        <section class="mb-16">
+            <div class="mb-6 border-l-4 border-teal-500 pl-4">
+                <h3 class="text-2xl font-bold text-teal-900">4. Flächennutzung & Zonierung</h3>
+                <p class="text-gray-700 mt-2">
+                    Verteilung der Flächenarten. Simmerath ist durch den Nationalpark Eifel geprägt, Raeren durch ländliche Wohngebiete und Landwirtschaft.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="bg-white rounded-xl shadow-md p-6 flex flex-col items-center">
+                    <h4 class="text-lg font-bold text-teal-800 mb-2">Simmerath (Struktur)</h4>
+                    <div class="chart-container" style="height: 300px;">
+                        <canvas id="doughnutDe"></canvas>
+                    </div>
+                    <p class="text-sm text-gray-500 mt-4 text-center">Hoher Waldanteil & klare Siedlungsgrenzen.</p>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-md p-6 flex flex-col items-center">
+                    <h4 class="text-lg font-bold text-orange-800 mb-2">Raeren (Struktur)</h4>
+                    <div class="chart-container" style="height: 300px;">
+                        <canvas id="doughnutBe"></canvas>
+                    </div>
+                    <p class="text-sm text-gray-500 mt-4 text-center">Streusiedlung & landwirtschaftliche Prägung.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="bg-gray-800 text-gray-300 py-8 text-center rounded-lg mt-8">
+            <p class="mb-2">Infografik generiert für Planungsanalyse Eifel</p>
+            <p class="text-xs text-gray-500">Daten basieren auf Vergleich BauGB (DE) und CoDT (Wallonie).</p>
+        </footer>
+
+    </main>
+
+    <script>
+        // ---------------------------------------------------------
+        // UTILITY: Label Splitting for 16-char limit
+        // ---------------------------------------------------------
+        function splitLabel(str) {
+            const limit = 16;
+            const words = str.split(' ');
+            const lines = [];
+            let currentLine = words[0];
+
+            for (let i = 1; i < words.length; i++) {
+                if (currentLine.length + 1 + words[i].length <= limit) {
+                    currentLine += ' ' + words[i];
+                } else {
+                    lines.push(currentLine);
+                    currentLine = words[i];
+                }
+            }
+            lines.push(currentLine);
+            return lines.length > 1 ? lines : lines[0];
+        }
+
+        // Global Chart Defaults
+        Chart.defaults.font.family = "'Segoe UI', Roboto, sans-serif";
+        Chart.defaults.color = '#374151';
+        
+        // ---------------------------------------------------------
+        // CHART 1: Timeline (Bar Chart)
+        // ---------------------------------------------------------
+        const ctxTimeline = document.getElementById('timelineChart').getContext('2d');
+        
+        const labelsTimeline = [
+            'Vorlauf / Planung', 
+            'Behörden- & Bürgerbeteiligung', 
+            'Genehmigung / Satzung', 
+            'Gesamtdauer (Monate)'
+        ].map(splitLabel);
+
+        new Chart(ctxTimeline, {
+            type: 'bar',
+            data: {
+                labels: labelsTimeline,
+                datasets: [
+                    {
+                        label: 'Simmerath (B-Plan)',
+                        data: [6, 6, 6, 18], 
+                        backgroundColor: '#0F766E', // Teal
+                        borderColor: '#0F766E',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Raeren (Permis)',
+                        data: [2, 2, 2, 6], 
+                        backgroundColor: '#F97316', // Orange
+                        borderColor: '#F97316',
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                indexAxis: 'y', // Horizontal bars
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            title: function(tooltipItems) {
+                                const item = tooltipItems[0];
+                                let label = item.chart.data.labels[item.dataIndex];
+                                return Array.isArray(label) ? label.join(' ') : label;
+                            },
+                            afterBody: function(context) {
+                                return "Monate (Durchschnitt)";
+                            }
+                        }
+                    },
+                    legend: { position: 'bottom' }
+                },
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        title: { display: true, text: 'Dauer in Monaten' }
+                    }
+                }
+            }
+        });
+
+        // ---------------------------------------------------------
+        // CHART 2: Radar Chart (Comparison)
+        // ---------------------------------------------------------
+        const ctxRadar = document.getElementById('radarChart').getContext('2d');
+        
+        const labelsRadar = [
+            'Rechtssicherheit', 
+            'Verfahrensgeschwindigkeit', 
+            'Flexibilität (Bauherr)', 
+            'Bürgerbeteiligung', 
+            'Kosten (Planung)'
+        ].map(splitLabel);
+
+        new Chart(ctxRadar, {
+            type: 'radar',
+            data: {
+                labels: labelsRadar,
+                datasets: [{
+                    label: 'Simmerath (DE)',
+                    data: [9, 4, 3, 8, 5],
+                    fill: true,
+                    backgroundColor: 'rgba(15, 118, 110, 0.2)',
+                    borderColor: '#0F766E',
+                    pointBackgroundColor: '#0F766E',
+                    pointBorderColor: '#fff'
+                }, {
+                    label: 'Raeren (BE)',
+                    data: [6, 8, 7, 5, 7],
+                    fill: true,
+                    backgroundColor: 'rgba(249, 115, 22, 0.2)',
+                    borderColor: '#F97316',
+                    pointBackgroundColor: '#F97316',
+                    pointBorderColor: '#fff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            title: function(tooltipItems) {
+                                const item = tooltipItems[0];
+                                let label = item.chart.data.labels[item.dataIndex];
+                                return Array.isArray(label) ? label.join(' ') : label;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    r: {
+                        angleLines: { display: true },
+                        suggestedMin: 0,
+                        suggestedMax: 10
+                    }
+                }
+            }
+        });
+
+        // ---------------------------------------------------------
+        // CHART 3 & 4: Doughnut Charts (Land Use)
+        // ---------------------------------------------------------
+        
+        const landUseLabels = ['Wohnbaufläche', 'Landwirtschaft', 'Forst/Wald', 'Gewerbe/Sonstiges'].map(splitLabel);
+        
+        // Simmerath
+        new Chart(document.getElementById('doughnutDe'), {
+            type: 'doughnut',
+            data: {
+                labels: landUseLabels,
+                datasets: [{
+                    data: [15, 30, 45, 10], 
+                    backgroundColor: ['#0D9488', '#FCD34D', '#115E59', '#94A3B8'],
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom' },
+                    tooltip: {
+                        callbacks: {
+                            title: function(tooltipItems) {
+                                const item = tooltipItems[0];
+                                let label = item.chart.data.labels[item.dataIndex];
+                                return Array.isArray(label) ? label.join(' ') : label;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Raeren
+        new Chart(document.getElementById('doughnutBe'), {
+            type: 'doughnut',
+            data: {
+                labels: landUseLabels,
+                datasets: [{
+                    data: [25, 45, 20, 10], 
+                    backgroundColor: ['#EA580C', '#FDBA74', '#9A3412', '#94A3B8'],
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom' },
+                    tooltip: {
+                        callbacks: {
+                            title: function(tooltipItems) {
+                                const item = tooltipItems[0];
+                                let label = item.chart.data.labels[item.dataIndex];
+                                return Array.isArray(label) ? label.join(' ') : label;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+    </script>
+</body>
+</html>
