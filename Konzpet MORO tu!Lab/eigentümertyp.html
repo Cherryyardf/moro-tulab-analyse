@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualisierung: Der Kleineigentümer-Baum</title>
+    <style>
+        :root {
+            --trunk-color: #4b5563; /* Dunkelgrau/Braun */
+            --branch-color: #d97706; /* Ocker/Braun für Hemmnisse */
+            --leaf-color: #10b981; /* Grün für Lösungen */
+            --bg-color: #f3f4f6;
+            --card-bg: #ffffff;
+            --text-main: #1f2937;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Intro Section */
+        .intro-container {
+            max-width: 900px;
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            margin-bottom: 3rem;
+            border-left: 5px solid var(--leaf-color);
+        }
+
+        .intro-container h2 {
+            margin-top: 0;
+            color: var(--trunk-color);
+        }
+
+        .intro-text {
+            line-height: 1.6;
+            color: #4b5563;
+        }
+
+        .highlight-quote {
+            font-style: italic;
+            background-color: #ecfdf5;
+            padding: 1rem;
+            border-radius: 6px;
+            margin-top: 1rem;
+            border: 1px solid #a7f3d0;
+        }
+
+        /* Tree Visualization */
+        .tree-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding-top: 20px;
+            overflow-x: auto;
+            width: 100%;
+        }
+
+        /* Flexbox structure for the tree */
+        .tree {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* The Trunk */
+        .trunk-node {
+            background-color: var(--trunk-color);
+            color: white;
+            padding: 1.5rem 2rem;
+            border-radius: 8px;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            max-width: 300px;
+            margin-bottom: 2rem;
+        }
+
+        .trunk-title {
+            font-weight: bold;
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .trunk-subtitle {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+
+        /* Vertical line from trunk */
+        .trunk-node::after {
+            content: '';
+            position: absolute;
+            bottom: -2rem;
+            left: 50%;
+            width: 2px;
+            height: 2rem;
+            background-color: #ccc;
+        }
+
+        /* Container for branches */
+        .branches-container {
+            display: flex;
+            justify-content: center;
+            position: relative;
+            gap: 20px;
+        }
+
+        /* The horizontal connector line */
+        .branches-container::before {
+            content: '';
+            position: absolute;
+            top: -20px; /* Aligns with bottom of trunk line connector */
+            left: 10%; /* Adjust based on number of items */
+            right: 10%;
+            height: 2px;
+            background-color: #ccc;
+            /* This draws the horizontal line connecting all branches */
+            width: 80%; 
+            left: 10%;
+        }
+        
+        /* Individual Branch Wrapper */
+        .branch-column {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 220px;
+            position: relative;
+        }
+
+        /* Connector from horizontal line to branch top */
+        .branch-column::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            width: 2px;
+            height: 20px;
+            background-color: #ccc;
+        }
+
+        /* The Branch Node (Problem/Hemmnis) */
+        .branch-node {
+            background-color: white;
+            border-top: 4px solid var(--branch-color);
+            border-radius: 0 0 6px 6px;
+            padding: 1rem;
+            text-align: center;
+            width: 100%;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            position: relative;
+            margin-bottom: 2rem; /* Space for the stem to the leaf */
+            transition: transform 0.2s;
+            min-height: 100px; /* Adjusted height since title is gone */
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+
+        .branch-node:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+
+        .branch-label {
+            color: var(--branch-color);
+            font-size: 0.9rem; /* Slightly larger now that title is gone */
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-bottom: 0.8rem;
+        }
+
+        .branch-title {
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        .branch-desc {
+            font-size: 0.85rem;
+            color: #666;
+            line-height: 1.4;
+        }
+
+        /* Connector from Branch to Leaf */
+        .branch-node::after {
+            content: '';
+            position: absolute;
+            bottom: -2rem;
+            left: 50%;
+            width: 2px;
+            height: 2rem;
+            background-color: #ccc; /* Stem color */
+        }
+
+        /* The Leaf Node (Solution) */
+        .leaf-node {
+            background-color: var(--leaf-color);
+            color: white;
+            padding: 1rem;
+            border-radius: 20px 20px 20px 0; /* Leaf shape ish */
+            text-align: center;
+            width: 90%;
+            box-shadow: 0 4px 6px rgba(16, 185, 129, 0.3);
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .leaf-node:hover {
+            transform: scale(1.05);
+            background-color: #059669;
+        }
+
+        .leaf-icon {
+            font-size: 1.2rem;
+            margin-bottom: 0.2rem;
+            display: block;
+        }
+
+        .leaf-title {
+            font-weight: bold;
+            font-size: 1rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1000px) {
+            .tree-wrapper {
+                justify-content: flex-start; /* Allow scrolling on smaller screens */
+            }
+            .branches-container {
+                padding-bottom: 20px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .branches-container {
+                flex-direction: column;
+                gap: 40px;
+            }
+            
+            .branches-container::before {
+                display: none; /* Hide horizontal line on mobile */
+            }
+
+            .branch-column {
+                width: 100%;
+                max-width: 350px;
+            }
+
+            .branch-column::before {
+                display: none; /* Hide top connector on mobile */
+            }
+
+            .trunk-node::after {
+                height: 30px;
+            }
+            
+            /* Add vertical connector for mobile stack if desired, or leave separated */
+            .tree {
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Intro Text Section -->
+    <div class="intro-container">
+        <h2>Analyse-Raster: Der Private Kleineigentümer in MORO</h2>
+        <p class="intro-text">
+            Um effektive Strategien für die Stadtentwicklung in Simmerath und Raeren zu entwickeln, ist eine Differenzierung der Eigentümerstruktur notwendig. Diese Grafik visualisiert die unterschiedlichen Motivlagen (Hemmnisse) und ordnet ihnen direkt die passenden Handlungsinstrumente zu.
+        </p>
+        <div class="highlight-quote">
+            „Die Analyse der BBSR-Studie 'Umwandlung von Nichtwohngebäuden' zeigt deutlich: Den einen privaten Eigentümer gibt es nicht. Während institutionelle Anleger rein renditeorientiert agieren, ist die Gruppe der privaten Kleineigentümer heterogener. Sie agieren im lokalen Kontext und haben oft ein intrinsisches Interesse an der Stadtentwicklung, scheitern aber an spezifischen Barrieren. Wir müssen die neutralen Hemmnisse identifizieren, um das passende Instrument anzubieten.“
+        </div>
+    </div>
+
+    <!-- Visualization Section -->
+    <div class="tree-wrapper">
+        <div class="tree">
+            
+            <!-- STAMM (The Owner) -->
+            <div class="trunk-node">
+                <div class="trunk-title">Der Private Kleineigentümer</div>
+                <div class="trunk-subtitle">Lokal verankert, oft Laie, heterogene Motive</div>
+            </div>
+
+            <!-- ÄSTE & BLÄTTER (Branches & Leaves) -->
+            <div class="branches-container">
+                
+                <!-- Ast 1: Kompetenzlücke -->
+                <div class="branch-column">
+                    <div class="branch-node">
+                        <div class="branch-label">Kompetenzlücke</div>
+                        <div class="branch-desc">Interesse vorhanden, aber fehlendes Fachwissen blockiert.</div>
+                    </div>
+                    <div class="leaf-node">
+                        <span class="leaf-icon">🌱</span>
+                        <div class="leaf-title">Aktive Bauberatung & Begleitung</div>
+                    </div>
+                </div>
+
+                <!-- Ast 2: Familienvorsorge -->
+                <div class="branch-column">
+                    <div class="branch-node">
+                        <div class="branch-label">Familienvorsorge</div>
+                        <div class="branch-desc">Fläche als soziale Absicherung. Keine Verkaufsabsicht.</div>
+                    </div>
+                    <div class="leaf-node">
+                        <span class="leaf-icon">🤝</span>
+                        <div class="leaf-title">Pachtmodelle / Kooperation</div>
+                    </div>
+                </div>
+
+                <!-- Ast 3: Überforderung -->
+                <div class="branch-column">
+                    <div class="branch-node">
+                        <div class="branch-label">Überforderung</div>
+                        <div class="branch-desc">Sanierungsstau, Streitigkeiten oder Finanzierungslücken.</div>
+                    </div>
+                    <div class="leaf-node">
+                        <span class="leaf-icon">🏗️</span>
+                        <div class="leaf-title">Zwischenerwerb durch Gemeinde</div>
+                    </div>
+                </div>
+
+                <!-- Ast 4: Lebenszyklus -->
+                <div class="branch-column">
+                    <div class="branch-node">
+                        <div class="branch-label">Alter</div>
+                        <div class="branch-desc">Umbau physisch/finanziell nicht leistbar, Auszug emotional schwer.</div>
+                    </div>
+                    <div class="leaf-node">
+                        <span class="leaf-icon">👴</span>
+                        <div class="leaf-title">Verrentung (Viager-Modell)</div>
+                    </div>
+                </div>
+
+                 <!-- Ast 5: Markterwartung -->
+                 <div class="branch-column">
+                    <div class="branch-node">
+                        <div class="branch-label">Markterwartung</div>
+                        <div class="branch-desc">Angst, zu früh zu verkaufen. Abwartende Haltung.</div>
+                    </div>
+                    <div class="leaf-node">
+                        <span class="leaf-icon">⚖️</span>
+                        <div class="leaf-title">Druck & Impulssetzung</div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
