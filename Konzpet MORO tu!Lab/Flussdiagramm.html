@@ -1,0 +1,42 @@
+graph TD
+    %% --- Definition der Styles ---
+    classDef phase fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000,rx:10,ry:10;
+    classDef output fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,stroke-dasharray: 5 5,color:#000,rx:5,ry:5;
+    classDef final fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px,color:#000,rx:10,ry:10;
+
+    %% --- Phase 1: Kontext ---
+    P1(<b>1. Kontext</b><br/>Einleitung & Rahmenbedingungen)
+    Note1[Inhalt: Rechtliche Hürden & Chancen<br/>DE-BG Vergleich<br/><i>~3 Folien</i>]
+
+    %% --- Phase 2: Analyse ---
+    P2(<b>2. Analyse</b><br/>Vom Ort zur Typologie)
+    Note2[Inhalt: Fotos der Ortsbegehung<br/>Ableitung der Typen:<br/>Kleineigentümer, Baulücken, Leerstand<br/><i>~2-3 Folien</i>]
+
+    %% --- Phase 3: Katalog ---
+    P3(<b>3. Katalog</b><br/>Maßnahmen & Förderung)
+    Note3[Inhalt: Was kann man tun?<br/>Strukturgrafiken<br/><i>~1-2 Folien</i>]
+
+    %% --- Phase 4: Validierung ---
+    P4(<b>4. Validierung</b><br/>Der Realitätscheck)
+    Note4[Inhalt: Interviews & Akteursmeinungen<br/>'Was fehlt noch?'<br/><i>~1-2 Folien</i>]
+
+    %% --- Phase 5: Produkt ---
+    P5(<b>5. Produkt</b><br/>Die Website / Das Tool)
+    Note5[Inhalt: Die Antwort auf Analyse & Interviews<br/>Demo/Screenshots für Gemeinden<br/><i>~1 Folie</i>]
+
+    %% --- Phase 6: Ausblick ---
+    P6(<b>6. Ausblick</b><br/>Fahrplan zum Leitfaden)
+    Note6[Synthese aus Interviews & Planung<br/>Zeitstrahl & Next Steps]
+
+    %% --- Verbindungen ---
+    P1 --> Note1 --> P2
+    P2 --> Note2 --> P3
+    P3 --> Note3 --> P4
+    P4 --> Note4 --> P5
+    P5 --> Note5 --> P6
+    P6 --> Note6
+
+    %% --- Styling Zuweisung ---
+    class P1,P2,P3,P4,P5 phase;
+    class P6 final;
+    class Note1,Note2,Note3,Note4,Note5,Note6 output;
