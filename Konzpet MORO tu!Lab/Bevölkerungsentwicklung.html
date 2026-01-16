@@ -1,0 +1,179 @@
+
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bevölkerungsentwicklung (Relative Veränderung)</title>
+    <!-- Chart.js laden -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f8f9fa;
+            padding: 20px;
+        }
+        .chart-container {
+            position: relative;
+            height: 60vh;
+            width: 90vw;
+            max-width: 1000px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .info-text {
+            text-align: center;
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="chart-container">
+        <h2>Bevölkerungsentwicklung 2023-2040</h2>
+        <p class="info-text">Relative Veränderung zum Jahr 2023 (Start = 0%)</p>
+        <canvas id="popChart"></canvas>
+    </div>
+
+    <script>
+        // Daten aus dem Python-Skript
+        const rawData = {
+            years: [2023, 2025, 2030, 2035, 2040],
+            series: {
+                "Würselen": [38750, 39100, 39750, 39950, 39980],
+                "Simmerath": [15950, 16150, 16420, 16430, 16350],
+                "Aachen (Stadt)": [252800, 255500, 257800, 255000, 253300],
+                "Monschau": [11900, 11970, 12080, 12000, 11860],
+                "StädteRegion Aachen": [564500, 569000, 575200, 572000, 568500]
+            }
+        };
+
+        // Farben
+        const colors = {
+            "Würselen": "#1f77b4",
+            "Simmerath": "#2ca02c",
+            "Aachen (Stadt)": "#d62728",
+            "Monschau": "#9467bd",
+            "StädteRegion Aachen": "#7f7f7f"
+        };
+
+        const datasets = [];
+
+        // Datenverarbeitung: Relative Veränderung (Start = 0)
+        for (const [region, values] of Object.entries(rawData.series)) {
+            const baseValue = values[0]; // Wert von 2023
+            
+            // Berechnung: ((Aktuell - Start) / Start) * 100
+            const changeData = values.map(val => ((val - baseValue) / baseValue) * 100);
+
+            // Spezielle Styles
+            const isWuerselen = region === "Würselen";
+            const isRegion = region === "StädteRegion Aachen";
+
+            datasets.push({
+                label: region,
+                data: changeData,
+                borderColor: colors[region],
+                backgroundColor: colors[region],
+                borderWidth: isWuerselen ? 4 : 2,
+                borderDash: isRegion ? [5, 5] : [],
+                tension: 0.4,
+                pointRadius: 4,
+                pointHoverRadius: 6
+            });
+        }
+
+        // Chart erstellen
+        const ctx = document.getElementById('popChart').getContext('2d');
+        
+        const popChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: rawData.years,
+                datasets: datasets
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                devicePixelRatio: 2,
+                interaction: {
+                    mode: 'index',
+                    intersect: false,
+                },
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            usePointStyle: true,
+                            padding: 20
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.parsed.y !== null) {
+                                    const val = context.parsed.y;
+                                    // Füge Pluszeichen hinzu, wenn positiv
+                                    const sign = val > 0 ? '+' : '';
+                                    label += sign + val.toFixed(2) + '%';
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Veränderung seit 2023 (%)',
+                            font: {
+                                size: 14,
+                                weight: 'bold'
+                            }
+                        },
+                        // Nulllinie hervorheben
+                        grid: {
+                            color: (context) => context.tick.value === 0 ? '#000000' : '#e0e0e0',
+                            lineWidth: (context) => context.tick.value === 0 ? 1.5 : 1
+                        },
+                        ticks: {
+                            callback: function(value) {
+                                const sign = value > 0 ? '+' : '';
+                                return sign + value + '%';
+                            }
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Jahr',
+                            font: {
+                                size: 14
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
