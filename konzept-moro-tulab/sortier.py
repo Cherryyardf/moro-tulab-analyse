@@ -8,6 +8,7 @@ import argparse
 import openpyxl
 from copy import copy
 import os
+import sys
 import pandas as pd
 from openpyxl.utils.dataframe import dataframe_to_rows
 
@@ -112,7 +113,7 @@ def run_bund_update():
         print(f"Nutze Fallback-Datei: {fallback_filename}")
     else:
         print("FEHLER: Keine Vorläufer-Datei gefunden. Bitte führen Sie den vorherigen Schritt aus.")
-        return
+        return False
 
     try:
         # Laden der Excel
@@ -151,16 +152,19 @@ def run_bund_update():
         print("-" * 40)
         print(f"ERFOLG! Datei gespeichert: {output_filename}")
         print("-" * 40)
+        return True
 
     except PermissionError:
         print("\nFEHLER: Die Excel-Datei ist noch geöffnet. Bitte schließen!")
     except Exception as e:
         print(f"\nFEHLER: {e}")
+    return False
 
 if __name__ == "__main__":
     args = parse_args()
     configure(args)
-    run_bund_update()
+    ok = run_bund_update()
     if args.pause:
         print("\n")
-        input("Drücken Sie Enter zum Beenden...")
+        input("Drücken Sie Enter zum Beenden...")
+    sys.exit(0 if ok else 1)
