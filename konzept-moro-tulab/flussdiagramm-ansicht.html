@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Flussdiagramm der Präsentation</title>
+<style>
+  :root {
+    --bg: #f7f7f5; --card: #ffffff; --text: #1d1d1b; --muted: #5f5f5a;
+    --line: #e2e1dc; --accent: #1f6f5c;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #161716; --card: #1f201f; --text: #ececea; --muted: #a3a39d;
+      --line: #333532; --accent: #6cc4ab;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  main { max-width: 960px; margin: 0 auto; padding: 48px 16px 64px; }
+  h1 { font-size: 1.75rem; margin: 0 0 .25rem; letter-spacing: -.01em; }
+  .lead { color: var(--muted); margin: 0 0 2rem; }
+  a { color: var(--accent); }
+  /* Das Diagramm hat feste helle Farben, daher immer auf hellem Grund */
+  .diagram {
+    background: #ffffff; color: #000; border: 1px solid var(--line); border-radius: 10px;
+    padding: 24px 16px; overflow-x: auto; text-align: center;
+  }
+  .diagram svg { max-width: 100%; height: auto; }
+  .error { color: #b3261e; text-align: left; }
+  details { margin-top: 1.5rem; }
+  summary { cursor: pointer; color: var(--muted); }
+  pre {
+    background: var(--card); border: 1px solid var(--line); border-radius: 10px;
+    padding: 16px; overflow-x: auto; font-size: .8rem;
+  }
+  footer { margin-top: 3rem; font-size: .875rem; color: var(--muted); }
+</style>
+</head>
+<body>
+<main>
+  <p><a href="../index.html">← Übersicht</a></p>
+  <h1>Flussdiagramm der Präsentation</h1>
+  <p class="lead">Gliederung der Präsentation in sechs Phasen, von Kontext über Analyse, Katalog, Validierung und Produkt bis zum Ausblick. Der Mermaid-Quelltext stammt unverändert aus
+    <a href="Flussdiagramm.html">Flussdiagramm.html</a> und wird hier im Browser gerendert (Mermaid über CDN, Internetverbindung nötig).</p>
+
+  <div class="diagram" id="diagram">Diagramm wird geladen …</div>
+
+  <details>
+    <summary>Mermaid-Quelltext anzeigen</summary>
+    <pre id="source"></pre>
+  </details>
+
+  <footer>© Lukas Willmy – alle Rechte vorbehalten. Ansicht ausdrücklich erwünscht.</footer>
+</main>
+
+<!-- Kopie des Inhalts von Flussdiagramm.html (byte-gleich bis auf Zeilenenden) -->
+<script type="text/plain" id="mermaid-source">
+graph TD
+    %% --- Definition der Styles ---
+    classDef phase fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000,rx:10,ry:10;
+    classDef output fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,stroke-dasharray: 5 5,color:#000,rx:5,ry:5;
+    classDef final fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px,color:#000,rx:10,ry:10;
+
+    %% --- Phase 1: Kontext ---
+    P1(<b>1. Kontext</b><br/>Einleitung & Rahmenbedingungen)
+    Note1[Inhalt: Rechtliche Hürden & Chancen<br/>DE-BG Vergleich<br/><i>~3 Folien</i>]
+
+    %% --- Phase 2: Analyse ---
+    P2(<b>2. Analyse</b><br/>Vom Ort zur Typologie)
+    Note2[Inhalt: Fotos der Ortsbegehung<br/>Ableitung der Typen:<br/>Kleineigentümer, Baulücken, Leerstand<br/><i>~2-3 Folien</i>]
+
+    %% --- Phase 3: Katalog ---
+    P3(<b>3. Katalog</b><br/>Maßnahmen & Förderung)
+    Note3[Inhalt: Was kann man tun?<br/>Strukturgrafiken<br/><i>~1-2 Folien</i>]
+
+    %% --- Phase 4: Validierung ---
+    P4(<b>4. Validierung</b><br/>Der Realitätscheck)
+    Note4[Inhalt: Interviews & Akteursmeinungen<br/>'Was fehlt noch?'<br/><i>~1-2 Folien</i>]
+
+    %% --- Phase 5: Produkt ---
+    P5(<b>5. Produkt</b><br/>Die Website / Das Tool)
+    Note5[Inhalt: Die Antwort auf Analyse & Interviews<br/>Demo/Screenshots für Gemeinden<br/><i>~1 Folie</i>]
+
+    %% --- Phase 6: Ausblick ---
+    P6(<b>6. Ausblick</b><br/>Fahrplan zum Leitfaden)
+    Note6[Synthese aus Interviews & Planung<br/>Zeitstrahl & Next Steps]
+
+    %% --- Verbindungen ---
+    P1 --> Note1 --> P2
+    P2 --> Note2 --> P3
+    P3 --> Note3 --> P4
+    P4 --> Note4 --> P5
+    P5 --> Note5 --> P6
+    P6 --> Note6
+
+    %% --- Styling Zuweisung ---
+    class P1,P2,P3,P4,P5 phase;
+    class P6 final;
+    class Note1,Note2,Note3,Note4,Note5,Note6 output;
+</script>
+
+<script type="module">
+  const code = document.getElementById("mermaid-source").textContent.trim();
+  document.getElementById("source").textContent = code;
+  const target = document.getElementById("diagram");
+  try {
+    const { default: mermaid } = await import("https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs");
+    mermaid.initialize({ startOnLoad: false, theme: "default", securityLevel: "strict" });
+    const { svg } = await mermaid.render("flussdiagramm", code);
+    target.innerHTML = svg;
+  } catch (err) {
+    target.innerHTML = "";
+    const p = document.createElement("p");
+    p.className = "error";
+    p.textContent = "Das Diagramm konnte nicht gerendert werden (" + err.message + "). Der Quelltext steht unten.";
+    target.appendChild(p);
+  }
+</script>
+</body>
+</html>

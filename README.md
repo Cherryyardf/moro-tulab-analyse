@@ -17,13 +17,18 @@ Aus dem Konzept entstand die Website **BAUKOMPASS**. Sie wird in eigenen Reposit
 | `konzept-moro-tulab/eigentümertyp.html` | HTML | **Analyse-Raster „Der private Kleineigentümer“**: ein Baum der Eigentümertypen und ihrer Hemmnisse, gestützt auf eine BBSR-Studie zur Umwandlung von Nichtwohngebäuden. |
 | `konzept-moro-tulab/Bürger.html` | HTML (Tailwind, Chart.js) | **Mock-up einer Beteiligungs-App „Unser Quartier“** mit Quartiersnachrichten, Leih-Angeboten, Stimmungsbarometer und Abstimmung über Schwerpunkte. |
 | `konzept-moro-tulab/Bevölkerungsentwicklung.html` | HTML (Chart.js) | Diagramm der relativen Bevölkerungsentwicklung 2023–2040. |
-| `konzept-moro-tulab/Flussdiagramm.html` | Mermaid-Quelltext | Gliederung der Präsentation als Flussdiagramm (Kontext → Analyse → …). Die Datei enthält nur Mermaid-Code und keine HTML-Seite; anzeigen lässt sie sich z. B. im [Mermaid Live Editor](https://mermaid.live). |
+| `konzept-moro-tulab/Flussdiagramm.html` | Mermaid-Quelltext | Gliederung der Präsentation als Flussdiagramm (Kontext → Analyse → Katalog → Validierung → Produkt → Ausblick). Die Datei enthält nur Mermaid-Code und bleibt als Original unverändert. Gerendert wird sie von [`konzept-moro-tulab/flussdiagramm-ansicht.html`](konzept-moro-tulab/flussdiagramm-ansicht.html). |
+| `konzept-moro-tulab/flussdiagramm-ansicht.html` | HTML (Mermaid) | **Ansichtsseite** für das Flussdiagramm: Sie rendert den Mermaid-Code aus `Flussdiagramm.html` im Browser und zeigt den Quelltext aufklappbar darunter. |
 | `konzept-moro-tulab/sortier.py` | Python (pandas, openpyxl) | Ergänzt die Excel-Tabelle zum Rechtsvergleich (BauGB, BauNVO, BauO NRW, CoDT) um Zeilen zur Bundesförderung (KfW, BEG, AfA). Die Excel-Dateien selbst sind nicht im Repo. |
 | `konzept-moro-tulab/SimmDaten/simmerath_extract.bat` | Batch (GDAL/ogr2ogr) | Schneidet aus einem OSM-Extrakt den Raum Aachen/Eifel/Simmerath aus und filtert die Daten in ein GeoPackage mit den Layern Verkehrsnetz, Versorgungs-POIs und Landnutzung. |
 
+### Autorschaft
+
+Alle Inhalte dieses Repositories sind **Einzelarbeit** von Lukas Willmy.
+
 ## Benutzung
 
-**HTML-Seiten:** `index.html` (Übersicht) oder direkt die gewünschte Datei im Browser öffnen. Ein Build ist nicht nötig. Tailwind, Chart.js und Google Fonts kommen über ein CDN, deshalb brauchen die Seiten eine Internetverbindung.
+**HTML-Seiten:** `index.html` (Übersicht) oder direkt die gewünschte Datei im Browser öffnen. Ein Build ist nicht nötig. Tailwind, Chart.js, Mermaid und Google Fonts kommen über ein CDN, deshalb brauchen die Seiten eine Internetverbindung.
 
 **Skripte:**
 
@@ -32,6 +37,15 @@ python moro-tulab/graph.py                          # benötigt networkx, matplo
 python konzept-moro-tulab/sortier.py --help          # benötigt pandas, openpyxl
 konzept-moro-tulab\SimmDaten\simmerath_extract.bat <OSM-Datei.osm.pbf> [Zielordner]
 ```
+
+Für die Python-Skripte genügt ein projektlokales Environment, z. B. mit [uv](https://docs.astral.sh/uv/):
+
+```text
+uv venv --python 3.11 .venv
+uv pip install --python .venv\Scripts\python.exe pandas openpyxl networkx matplotlib
+```
+
+`sortier.py` endet bei Erfolg mit Exit-Code 0 und bei Fehlern mit 1, z. B. wenn die Eingabedatei fehlt oder die Excel-Datei noch geöffnet ist.
 
 Das Batch-Skript braucht `ogr2ogr` im PATH, z. B. aus der OSGeo4W-Shell. Ohne Argumente gibt es seine Hilfe aus.
 
