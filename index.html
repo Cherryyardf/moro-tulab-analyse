@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MORO tu!Lab Analyse</title>
+<style>
+  :root {
+    --bg: #f7f7f5; --card: #ffffff; --text: #1d1d1b; --muted: #5f5f5a;
+    --line: #e2e1dc; --accent: #1f6f5c;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #161716; --card: #1f201f; --text: #ececea; --muted: #a3a39d;
+      --line: #333532; --accent: #6cc4ab;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  main { max-width: 860px; margin: 0 auto; padding: 48px 16px 64px; }
+  h1 { font-size: 2rem; margin: 0 0 .25rem; letter-spacing: -.01em; }
+  .lead { color: var(--muted); margin: 0 0 2.5rem; }
+  .lead a { color: var(--accent); }
+  h2 { font-size: .8rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin: 2rem 0 .75rem; }
+  ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+  a.card {
+    display: block; padding: 16px 18px; background: var(--card); border: 1px solid var(--line);
+    border-radius: 10px; color: inherit; text-decoration: none;
+  }
+  a.card:hover, a.card:focus-visible { border-color: var(--accent); outline: none; }
+  .title { font-weight: 600; color: var(--accent); }
+  .meta { font-size: .875rem; color: var(--muted); }
+  footer { margin-top: 3rem; font-size: .875rem; color: var(--muted); }
+</style>
+</head>
+<body>
+<main>
+  <h1>MORO tu!Lab – Wohnraumaktivierung</h1>
+  <p class="lead">Analysen und Visualisierungen zur Wohnraumaktivierung in den Grenzgemeinden Simmerath (DE) und Raeren (BE), entstanden im Studium an der RWTH Aachen 2025–2026. Zugehörige Website:
+    <a href="https://cherryyardf.github.io/">BAUKOMPASS</a> und
+    <a href="https://cherryyardf.github.io/tool/">Immobilien-Aktivierungs-Tool</a>.</p>
+
+  <h2>Planungsverfahren im Vergleich</h2>
+  <ul>
+    <li><a class="card" href="konzept-moro-tulab/analyse2.html">
+      <div class="title">Wohnbau &amp; Planungsrecht: Simmerath vs. Raeren</div>
+      <div class="meta">Planungspyramiden, Verfahrensdauer, System-Metriken, Flächennutzung · überarbeitete Fassung</div>
+    </a></li>
+    <li><a class="card" href="konzept-moro-tulab/analyse.html">
+      <div class="title">Wohnbau &amp; Planungsrecht – erste Fassung</div>
+      <div class="meta">Vorgängerversion des Verfahrensvergleichs</div>
+    </a></li>
+  </ul>
+
+  <h2>Akteure &amp; Beteiligung</h2>
+  <ul>
+    <li><a class="card" href="konzept-moro-tulab/eigent%C3%BCmertyp.html">
+      <div class="title">Analyse-Raster: Der private Kleineigentümer</div>
+      <div class="meta">Eigentümertypen und ihre Hemmnisse als Baum</div>
+    </a></li>
+    <li><a class="card" href="konzept-moro-tulab/B%C3%BCrger.html">
+      <div class="title">„Unser Quartier“ – Beteiligungs-App (Mock-up)</div>
+      <div class="meta">Quartiersnachrichten, Leih-Angebote, Stimmungsbarometer, Abstimmung</div>
+    </a></li>
+  </ul>
+
+  <h2>Daten</h2>
+  <ul>
+    <li><a class="card" href="konzept-moro-tulab/Bev%C3%B6lkerungsentwicklung.html">
+      <div class="title">Bevölkerungsentwicklung 2023–2040</div>
+      <div class="meta">Relative Veränderung als Diagramm</div>
+    </a></li>
+  </ul>
+
+  <h2>Quelltexte</h2>
+  <ul>
+    <li><a class="card" href="konzept-moro-tulab/Flussdiagramm.html">
+      <div class="title">Flussdiagramm der Präsentation</div>
+      <div class="meta">Mermaid-Quelltext, darstellbar z. B. in mermaid.live</div>
+    </a></li>
+    <li><a class="card" href="moro-tulab/graph.py">
+      <div class="title">graph.py – Konfliktgraph</div>
+      <div class="meta">Fünf Themen im Fünfeck mit Zielkonflikten · Python, networkx/matplotlib</div>
+    </a></li>
+    <li><a class="card" href="konzept-moro-tulab/sortier.py">
+      <div class="title">sortier.py – Rechtsvergleich erweitern</div>
+      <div class="meta">Ergänzt die Excel-Tabelle um Bundesförderung · Python, pandas/openpyxl</div>
+    </a></li>
+    <li><a class="card" href="konzept-moro-tulab/SimmDaten/simmerath_extract.bat">
+      <div class="title">simmerath_extract.bat – OSM-Extraktion</div>
+      <div class="meta">Verkehr, Versorgungs-POIs und Landnutzung für Aachen/Eifel als GeoPackage · GDAL/ogr2ogr</div>
+    </a></li>
+  </ul>
+
+  <footer>© Lukas Willmy – alle Rechte vorbehalten. Ansicht ausdrücklich erwünscht.</footer>
+</main>
+</body>
+</html>
